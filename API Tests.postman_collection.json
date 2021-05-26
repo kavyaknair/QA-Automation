@@ -1,0 +1,294 @@
+{
+	"info": {
+		"_postman_id": "8bb34b40-9f00-4a79-9819-a758f28c5f69",
+		"name": "API Tests",
+		"description": "This Collection is used to validate the scenarios given in the APIs assignment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"michael.lawson@reqres.in\",\r\n    \"password\": \"pistol\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/register",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"michael1.lawson@reqres.in\",\r\n    \"job\": \"pistol\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/users",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Assignment A",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var email = pm.environment.get(\"email\");\r",
+							"var password = pm.environment.get(\"password\");\r",
+							"pm.sendRequest({\r",
+							"    url : \"https://reqres.in/api/register\",\r",
+							"    method : 'POST',\r",
+							"    header: {\r",
+							"        'content-type': 'application/json'},\r",
+							"    body : \r",
+							"    {mode : 'raw',\r",
+							"    raw : JSON.stringify({\"email\": email,\"password\": password})\r",
+							"    }}, function (err, response) {\r",
+							"    pm.expect(response.code).to.eql(200);\r",
+							"    var user_id = response.json().id\r",
+							"    pm.environment.set(\"user_id\", user_id);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Register and login using the same user\",() => {\r",
+							"    console.log(pm.response.json())\r",
+							"    pm.expect(pm.response.code).to.be.eql(200)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"eve.holt@reqres.in\",\r\n    \"password\": \"cityslicka\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete and login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var id = pm.environment.get(\"user_id\");\r",
+							"pm.sendRequest({\r",
+							"    url : \"https://reqres.in/api/users/id\",\r",
+							"    method : 'DELETE',\r",
+							"    header: {\r",
+							"        'content-type': 'application/json'},\r",
+							"    }, function (err, response) {\r",
+							"    pm.expect(response.code).to.eql(204);\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"michael.lawson@reqres.in\",\r\n    \"password\": \"pistol123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Assignment C",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test to assert a resource page 1 , id 2 and year 2001\",() =>{\r",
+							"    let resp = pm.response.json().data.find(a => a.id === 2 & a.year === 2001)\r",
+							"    pm.expect(resp).to.exist\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/unknown",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"unknown"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Assignment D",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"To check if the response id 7 has the last name Lawson\",() =>{\r",
+							"    let resp = pm.response.json().data.find(a => a.id === 7)\r",
+							"    pm.expect(resp.last_name).to.equal('Lawson')\r",
+							"    \r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/users?page=2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Assignment E",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test to see if first name is John\",() =>{\r",
+							"var resp = pm.response.json()\r",
+							"pm.expect(resp.data.first_name).to.be.eql(\"John\")})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/users/2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
